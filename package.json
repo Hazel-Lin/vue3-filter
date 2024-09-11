@@ -1,0 +1,64 @@
+{
+  "name": "vue3-filter",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --port 5173 --open",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "vue-tsc --noEmit",
+    "preview": "vite preview",
+    "test": "vitest",
+    "up": "taze major -I",
+    "prepare": "simple-git-hooks"
+  },
+  "dependencies": {
+    "@vueuse/core": "^10.1.2",
+    "element-plus": "^2.7.5",
+    "pinia": "^2.1.7",
+    "vue": "^3.3.2",
+    "vue-draggable-plus": "^0.5.0",
+    "vue-router": "^4.2.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.21.1",
+    "@iconify-json/carbon": "^1.1.16",
+    "@types/node": "^18.16.11",
+    "@unocss/eslint-config": "^0.51.13",
+    "@unocss/reset": "^0.51.13",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue-jsx": "^3.0.1",
+    "@vue-macros/volar": "^0.9.8",
+    "@vue/test-utils": "^2.3.2",
+    "eslint": "^9.3.0",
+    "jsdom": "^22.0.0",
+    "lint-staged": "^15.2.7",
+    "pnpm": "^9.1.1",
+    "sass": "^1.62.1",
+    "simple-git-hooks": "^2.8.1",
+    "taze": "^0.10.1",
+    "typescript": "^5.0.4",
+    "unocss": "^0.51.13",
+    "unplugin-auto-import": "^0.16.0",
+    "unplugin-vue-components": "^0.24.1",
+    "unplugin-vue-macros": "^2.1.7",
+    "vite": "^5.3.2",
+    "vite-plugin-pages": "^0.29.0",
+    "vitest": "^1.6.0",
+    "vue-tsc": "^2.0.21"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@antfu",
+      "@unocss"
+    ]
+  }
+}
