@@ -100,11 +100,17 @@ export enum ClassName {
   DATE = 'date',
 }
 
-export interface Condition {
+export interface ConditionItem {
   fieldIdentifier: string
   operator: Operator
   value: string[]
   toValue: string | null
   className: ClassName
   format: Format
+  label: string
+  key: string
+  options?: {
+    label: string
+    value: string
+  }[]
 }

@@ -6,6 +6,10 @@
 */
 
 // 轻量的条件选项列表
+import { ref } from 'vue'
+import type { ConditionItem } from '~/types'
+import { ClassName, Format, Operator } from '~/types'
+
 export const allConditionOptions = ref([
   {
     label: '标题',
@@ -22,49 +26,50 @@ export const allConditionOptions = ref([
 ])
 
 export function useFilter() {
-  //  已经选中的条件列表
-  const selectedConditionList = ref([
+  // 已经选中的条件列表
+  const selectedConditionList = ref<ConditionItem[]>([
     {
       label: '标题',
       key: 'subject',
-      operator: 'CONTAINS',
-      value: '',
+      operator: Operator.CONTAINS,
+      value: [''],
       toValue: null,
-      className: 'string',
-      format: 'input',
+      className: ClassName.STRING,
+      format: Format.INPUT,
       fieldIdentifier: 'subject',
     },
     {
       key: 'priority',
       label: '优先级',
-      operator: 'CONTAINS',
+      operator: Operator.CONTAINS,
       value: ['high'],
       toValue: null,
-      className: 'option',
-      format: 'list',
+      className: ClassName.OPTION,
+      format: Format.LIST,
       fieldIdentifier: 'priority',
     },
   ])
+
   // 所有选项的 map
-  const allConditionMap = ref({
+  const allConditionMap = ref<Record<string, ConditionItem>>({
     subject: {
       label: '标题',
       key: 'subject',
-      operator: 'CONTAINS',
-      value: '',
+      operator: Operator.CONTAINS,
+      value: [''],
       toValue: null,
-      className: 'string',
-      format: 'input',
+      className: ClassName.STRING,
+      format: Format.INPUT,
       fieldIdentifier: 'subject',
     },
     priority: {
       label: '优先级',
       key: 'priority',
-      operator: 'CONTAINS',
+      operator: Operator.CONTAINS,
       value: [],
       toValue: null,
-      className: 'option',
-      format: 'list',
+      className: ClassName.OPTION,
+      format: Format.LIST,
       fieldIdentifier: 'priority',
       options: [
         {
@@ -84,11 +89,11 @@ export function useFilter() {
     status: {
       label: '状态',
       key: 'status',
-      operator: 'CONTAINS',
+      operator: Operator.CONTAINS,
       value: [],
       toValue: null,
-      className: 'status',
-      format: 'list',
+      className: ClassName.STATUS,
+      format: Format.LIST,
       fieldIdentifier: 'status',
       options: [
         {
@@ -113,8 +118,8 @@ export function useFilter() {
         },
       ],
     },
-
   })
+
   return {
     selectedConditionList,
     allConditionMap,
