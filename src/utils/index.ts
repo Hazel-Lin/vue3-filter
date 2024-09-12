@@ -71,6 +71,16 @@ export const allConditionMap = ref<Record<string, ConditionItem>>({
       },
     ],
   },
+  // createTime: {
+  //   label: '创建时间',
+  //   key: 'createTime',
+  //   operator: Operator.CONTAINS,
+  //   value: '',
+  //   toValue: null,
+  //   className: ClassName.DATE_TIME,
+  //   format: Format.DATE,
+  //   fieldIdentifier: 'createTime',
+  // },
 })
 
 // 一个轻量的下拉选项列表

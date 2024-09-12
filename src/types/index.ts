@@ -31,6 +31,7 @@ export enum OperatorZh {
 }
 
 export enum Format {
+  DATE = 'date',
   INPUT = 'input',
   LIST = 'list',
 }

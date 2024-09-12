@@ -9,6 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    CheckboxGroupWrapper: typeof import('./src/components/CheckboxGroupWrapper.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
@@ -31,8 +32,9 @@ declare module '@vue/runtime-core' {
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
-    Filter: typeof import('./src/components/filter.vue')['default']
+    Filter: typeof import('./src/components/Filter.vue')['default']
     FilterItem: typeof import('./src/components/FilterItem.vue')['default']
+    InputWrap: typeof import('./src/components/InputWrap.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
