@@ -1,17 +1,49 @@
 import type { ConditionItem } from '~/types'
 import { ClassName, Format, Operator } from '~/types'
 
+export function createDateShortcuts(shortcuts = []): { text: string, value: () => Date[] }[] {
+  const defaultShortcuts = [
+    {
+      text: '近一周',
+      value: () => {
+        const end = new Date()
+        const start = new Date()
+        start.setDate(start.getDate() - 7)
+        return [start, end]
+      },
+    },
+    {
+      text: '近一个月',
+      value: () => {
+        const end = new Date()
+        const start = new Date()
+        start.setMonth(start.getMonth() - 1)
+        return [start, end]
+      },
+    },
+    {
+      text: '近三个月',
+      value: () => {
+        const end = new Date()
+        const start = new Date()
+        start.setMonth(start.getMonth() - 3)
+        return [start, end]
+      },
+    },
+  ]
+  return [...defaultShortcuts, ...shortcuts]
+}
+
 // 所有选项的 map
 export const allConditionMap = ref<Record<string, ConditionItem>>({
-  subject: {
+  name: {
     label: '标题',
-    key: 'subject',
+    key: 'name',
     operator: Operator.CONTAINS,
     value: '',
     toValue: null,
     className: ClassName.STRING,
     format: Format.INPUT,
-    fieldIdentifier: 'subject',
     isDefault: true,
   },
   priority: {
@@ -21,10 +53,13 @@ export const allConditionMap = ref<Record<string, ConditionItem>>({
     value: [],
     toValue: null,
     className: ClassName.OPTION,
-    format: Format.LIST,
-    fieldIdentifier: 'priority',
+    format: Format.CHECKBOX,
     isDefault: true,
     options: [
+      {
+        label: '紧急',
+        value: 'urgent',
+      },
       {
         label: '高',
         value: 'high',
@@ -37,6 +72,10 @@ export const allConditionMap = ref<Record<string, ConditionItem>>({
         label: '低',
         value: 'low',
       },
+      {
+        label: '无关紧要',
+        value: 'insignificant',
+      },
     ],
   },
   status: {
@@ -46,55 +85,54 @@ export const allConditionMap = ref<Record<string, ConditionItem>>({
     value: [],
     toValue: null,
     className: ClassName.STATUS,
-    format: Format.LIST,
-    fieldIdentifier: 'status',
+    format: Format.SELECT,
     options: [
       {
-        label: '待确认',
-        value: '100001',
+        label: '新',
+        value: 'new',
       },
       {
-        label: '再次打开',
-        value: '100002',
+        label: '接受/处理',
+        value: 'in_progress',
       },
       {
-        label: '推迟修复',
-        value: '100003',
+        label: '已分配',
+        value: 'assigned',
       },
       {
-        label: '已确认',
-        value: '100004',
+        label: '已解决',
+        value: 'resolved',
       },
       {
-        label: '已选择',
-        value: '100005',
+        label: '已验证',
+        value: 'verified',
+      },
+      {
+        label: '重新打开',
+        value: 'reopened',
+      },
+      {
+        label: '已拒绝',
+        value: 'rejected',
+      },
+      {
+        label: '已关闭',
+        value: 'closed',
+      },
+      {
+        label: '挂起',
+        value: 'suspended',
       },
     ],
   },
-  // createTime: {
-  //   label: '创建时间',
-  //   key: 'createTime',
-  //   operator: Operator.CONTAINS,
-  //   value: '',
-  //   toValue: null,
-  //   className: ClassName.DATE_TIME,
-  //   format: Format.DATE,
-  //   fieldIdentifier: 'createTime',
-  // },
+  createdAt: {
+    label: '创建时间',
+    key: 'createdAt',
+    operator: Operator.BETWEEN,
+    value: '',
+    toValue: null,
+    className: ClassName.DATE_TIME,
+    format: Format.DATE_PICKER,
+    shortcuts: createDateShortcuts(),
+  },
 })
-
-// 一个轻量的下拉选项列表
-export const allConditionOptions = ref([
-  {
-    label: '标题',
-    key: 'subject',
-  },
-  {
-    label: '优先级',
-    key: 'priority',
-  },
-  {
-    label: '状态',
-    key: 'status',
-  },
-])
