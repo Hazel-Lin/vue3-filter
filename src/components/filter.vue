@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { useFilter, useShowDialog } from '~/composables'
-import { type ConditionItem, Format } from '~/types'
 import CheckboxGroupWrapper from './CheckboxGroupWrapper.vue'
 import InputWrap from './InputWrap.vue'
+import DatePickerWrap from './DatePickerWrap.vue'
+import SelectWrap from './SelectWrap.vue'
+import { type ConditionItem, Format } from '~/types'
+import { useFilter, useShowDialog } from '~/composables'
 
-const { selectedConditionList, unselectedConditionList, checkList, removeConditionValue, getConditionListDisplay, conditionList, removeCondition, save, handleFilterFn, handleReset } = useFilter()
+const { selectedConditionList, unselectedConditionList, checkList, removeConditionValue, getConditionListDisplay, conditionList, removeCondition, save, handleFilter, handleReset } = useFilter()
 const { isShowDialog, hideDialog, showDialog } = useShowDialog()
 
 const isSaveDisabled = computed(() => checkList.value.length === 0)
@@ -18,14 +20,14 @@ function handleSave() {
 }
 function getComponentType(item: ConditionItem) {
   switch (item.format) {
-    case Format.INPUT:
-      return InputWrap
-    case Format.LIST:
+    case Format.SELECT:
+      return SelectWrap
+    case Format.CHECKBOX:
       return CheckboxGroupWrapper
-    case Format.DATE:
-      return 'ElDatePicker'
+    case Format.DATE_PICKER:
+      return DatePickerWrap
     default:
-      return 'div'
+      return InputWrap
   }
 }
 </script>
@@ -47,7 +49,7 @@ function getComponentType(item: ConditionItem) {
     <el-row :gutter="16">
       <el-col v-for="item in selectedConditionList" :key="item.key" :span="12" class="mb-3">
         <div class="flex items-center relative group">
-          <div class="w-24 h-8 rounded-l-1 flex items-center justify-center bg-white border-box border-t border-l border-b border-gray-300">
+          <div class="w-24 h-8 rounded-l-1 flex flex-shrink-0 items-center justify-center bg-white border-box border-t border-l border-b border-gray-300">
             {{ item.label }}
           </div>
           <component :is="getComponentType(item)" v-model="item.value" :item="item" />
@@ -68,7 +70,7 @@ function getComponentType(item: ConditionItem) {
       <el-button @click="showDialog">
         添加条件
       </el-button>
-      <el-button type="primary" @click="handleFilterFn">
+      <el-button type="primary" @click="handleFilter">
         过滤
       </el-button>
       <el-button type="primary" @click="handleReset">
