@@ -1,12 +1,12 @@
 /*
 * 字段定义
-* 标题：subject
+* 标题：name
 * 优先级：priority
 * 状态：status
 */
 import type { ConditionItem, SelectedCondition, SimpleConditionItem } from '~/types'
-import { allConditionMap, allConditionOptions } from '~/utils'
-import { OperatorZh } from '~/types'
+import { allConditionMap } from '~/utils'
+import { Format, OperatorZh } from '~/types'
 
 export function useFilter() {
   const selectedConditionList = ref<ConditionItem[]>([])
@@ -14,67 +14,117 @@ export function useFilter() {
   const checkList = ref<string[]>([])
   const conditionList = ref<SimpleConditionItem[]>([])
 
+  const allConditionOptions = computed(() => Object.values(allConditionMap.value).map(({ label, key }: ConditionItem) => ({
+    label,
+    key,
+  })))
+
+  /**
+   * 检查值是否有效（非空数组或非空值）
+   * @param value - 要检查的值
+   * @returns 值是否有效
+   */
+  function isValidValue(value: unknown): boolean {
+    if (Array.isArray(value)) {
+      return value.length > 0
+    }
+    else if (typeof value === 'string') {
+      return value.trim() !== ''
+    }
+    return false
+  }
+
   function getUnselectedConditionList() {
-    const selectedKeys = selectedConditionList.value.map(item => item.key)
-    unselectedConditionList.value = allConditionOptions.value.filter(item => !selectedKeys.includes(item.key))
+    const selectedKeySet = new Set(selectedConditionList.value.map(item => item.key))
+    unselectedConditionList.value = allConditionOptions.value.filter(item => !selectedKeySet.has(item.key))
   }
 
   function save(list: Ref<string[]>) {
-    list.value.forEach((key) => {
-      const item = allConditionMap.value[key]
-      selectedConditionList.value.push(item)
-    })
-    unselectedConditionList.value = unselectedConditionList.value.filter(item => !list.value.includes(item.key))
+    const newSelectedKeys = new Set(list.value)
+
+    selectedConditionList.value.push(
+      ...list.value.map(key => allConditionMap.value[key]),
+    )
+
+    unselectedConditionList.value = unselectedConditionList.value.filter(
+      item => !newSelectedKeys.has(item.key),
+    )
+
     list.value = []
   }
 
   function removeCondition(key: string) {
-    selectedConditionList.value = selectedConditionList.value.filter(item => item.key !== key)
-    unselectedConditionList.value.push({
-      label: allConditionMap.value[key].label,
-      key,
-    })
+    const removedCondition = selectedConditionList.value.find(item => item.key === key)
+
+    if (removedCondition) {
+      selectedConditionList.value = selectedConditionList.value.filter(item => item.key !== key)
+      unselectedConditionList.value.push({
+        label: removedCondition.label,
+        key,
+      })
+    }
   }
 
   function handleFilter() {
-    return selectedConditionList.value.map(item => ({
-      label: item.label,
-      key: item.key,
-      operator: item.operator,
-      value: item.value,
-      options: item.options || [],
-    }))
+    conditionList.value = selectedConditionList.value
+      .filter(({ value }) => isValidValue(value))
+      .map(({ label, key, operator, value, format, options }) => ({
+        label,
+        key,
+        operator,
+        value,
+        format,
+        options: options ?? [],
+      }))
   }
 
-  function getDefaultCondition() {
-    const defaultConditionList = Object.values(allConditionMap.value).filter((condition: ConditionItem) => condition.isDefault).map((condition: ConditionItem) => ({
-      ...condition,
-    }))
-    selectedConditionList.value = defaultConditionList
-  }
+  /**
+   * 设置默认条件列表
+   * @throws {Error} 如果 allConditionMap 为空
+   */
+  function setDefaultConditions(): void {
+    if (!allConditionMap.value || Object.keys(allConditionMap.value).length === 0) {
+      throw new Error('allConditionMap is empty')
+    }
 
-  function handleReset() {
-    getDefaultCondition()
-    getUnselectedConditionList()
+    selectedConditionList.value = Object.values(allConditionMap.value)
+      .filter((condition): condition is ConditionItem & { isDefault: true } =>
+        condition.isDefault === true,
+      )
+      .map(condition => ({ ...condition }))
+  }
+  // 清空所有选中条件的值
+  function resetAllConditions() {
+    selectedConditionList.value.forEach((item) => {
+      item.value = Array.isArray(item.value) ? [] : ''
+    })
+
     conditionList.value = []
   }
-
-  function handleFilterFn() {
-    const filtered = handleFilter().filter((item) => {
-      if (Array.isArray(item.value)) {
-        return item.value.length > 0
-      }
-      return item.value !== '' && item.value !== null && item.value !== undefined
-    })
-    conditionList.value = filtered
+  function handleReset() {
+    resetAllConditions()
+    setDefaultConditions()
+    getUnselectedConditionList()
   }
 
   function getConditionListDisplay(condition: SimpleConditionItem) {
-    if (Array.isArray(condition.value)) {
-      const values = condition.value.map(val => condition.options?.find(option => option.value === val)?.label).join(', ')
-      return `${condition.label} ${OperatorZh[condition.operator]} '${values}'`
+    const { label, operator, value, format, options } = condition
+    const operatorZh = OperatorZh[operator]
+
+    if (format === Format.DATE_PICKER && Array.isArray(value) && value.length === 2) {
+      const [start, end] = value
+      return `${label} ${operatorZh} '${start}, ${end}'`
     }
-    return `${condition.label} ${OperatorZh[condition.operator]} '${condition.value}'`
+
+    if (Array.isArray(value)) {
+      const valueLabels = value
+        .map(val => options?.find(option => option.value === val)?.label)
+        .filter(Boolean)
+        .join(', ')
+      return `${label} ${operatorZh} '${valueLabels}'`
+    }
+
+    return `${label} ${operatorZh} '${value}'`
   }
 
   function removeConditionValue(key: string) {
@@ -86,7 +136,7 @@ export function useFilter() {
   }
 
   onMounted(() => {
-    getDefaultCondition()
+    setDefaultConditions()
     getUnselectedConditionList()
   })
 
@@ -99,10 +149,9 @@ export function useFilter() {
     save,
     removeCondition,
     handleFilter,
-    handleFilterFn,
     getConditionListDisplay,
     removeConditionValue,
     handleReset,
-    getDefaultCondition,
+    setDefaultConditions,
   }
 }
