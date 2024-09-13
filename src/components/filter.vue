@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import CheckboxGroupWrapper from './CheckboxGroupWrapper.vue'
-import InputWrap from './InputWrap.vue'
-import DatePickerWrap from './DatePickerWrap.vue'
-import SelectWrap from './SelectWrap.vue'
-import { type ConditionItem, Format } from '~/types'
 import { useFilter, useShowDialog } from '~/composables'
+import { type ConditionItem, Format } from '~/types'
+import CheckboxGroupWrapper from './CheckboxGroupWrapper.vue'
+import DatePickerWrap from './DatePickerWrap.vue'
+import InputWrap from './InputWrap.vue'
+import SelectWrap from './SelectWrap.vue'
 
 const { selectedConditionList, unselectedConditionList, checkList, removeConditionValue, getConditionListDisplay, conditionList, removeCondition, save, handleFilter, handleReset } = useFilter()
 const { isShowDialog, hideDialog, showDialog } = useShowDialog()
@@ -36,7 +36,7 @@ function getComponentType(item: ConditionItem) {
   <div class="flex flex-wrap">
     <el-tag
       v-for="condition in conditionList" :key="condition.key" closable type="info"
-      class="mr-4"
+      class="mr-2"
       @close="removeConditionValue(condition.key)"
     >
       {{ getConditionListDisplay(condition) }}
@@ -114,7 +114,8 @@ function getComponentType(item: ConditionItem) {
 </template>
 
 <style lang="scss" scoped>
-:deep(.el-input__wrapper) {
+:deep(.el-input__wrapper),
+:deep(.el-select__wrapper) {
   border-radius: 0 4px 4px 0;
 }
 </style>
