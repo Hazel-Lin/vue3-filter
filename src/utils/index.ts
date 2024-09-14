@@ -34,6 +34,15 @@ export function createDateShortcuts(shortcuts = []): { text: string, value: () =
   return [...defaultShortcuts, ...shortcuts]
 }
 
+// 通用的异步函数来获取选项
+async function fetchPriorityOptions() {
+  const options = await new Promise<{ label: string, value: string }[]>((resolve) => {
+    resolve([
+      { label: '测试', value: 'test' },
+    ])
+  })
+  return options
+}
 // 所有选项的 map
 export const allConditionMap = ref<Record<string, ConditionItem>>({
   name: {
@@ -134,5 +143,15 @@ export const allConditionMap = ref<Record<string, ConditionItem>>({
     className: ClassName.DATE_TIME,
     format: Format.DATE_PICKER,
     shortcuts: createDateShortcuts(),
+  },
+  test: {
+    label: '测试一蛤',
+    key: 'test',
+    operator: Operator.CONTAINS,
+    value: '',
+    toValue: null,
+    className: ClassName.STRING,
+    format: Format.SELECT,
+    options: fetchPriorityOptions,
   },
 })

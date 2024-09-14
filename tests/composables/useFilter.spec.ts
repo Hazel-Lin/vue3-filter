@@ -21,6 +21,7 @@ describe('useFilter composable', () => {
     expect(filter.unselectedConditionList.value).toEqual([
       { label: '状态', key: 'status' },
       { label: '创建时间', key: 'createdAt' },
+      { label: '测试一蛤', key: 'test' },
     ])
   })
 
@@ -34,6 +35,7 @@ describe('useFilter composable', () => {
 
     expect(filter.unselectedConditionList.value).toEqual([
       { label: '创建时间', key: 'createdAt' },
+      { label: '测试一蛤', key: 'test' },
     ])
 
     expect(list.value).toEqual([])
@@ -53,6 +55,7 @@ describe('useFilter composable', () => {
     expect(filter.unselectedConditionList.value).toEqual([
       { label: '状态', key: 'status' },
       { label: '创建时间', key: 'createdAt' },
+      { label: '测试一蛤', key: 'test' },
     ])
 
     expect(checkList.value).toEqual([])
@@ -67,6 +70,7 @@ describe('useFilter composable', () => {
     expect(filter.unselectedConditionList.value).toEqual([
       { label: '状态', key: 'status' },
       { label: '创建时间', key: 'createdAt' },
+      { label: '测试一蛤', key: 'test' },
       { label: '优先级', key: 'priority' },
     ])
   })
@@ -101,6 +105,7 @@ describe('useFilter composable', () => {
     expect(filter.unselectedConditionList.value).toEqual([
       { label: '状态', key: 'status' },
       { label: '创建时间', key: 'createdAt' },
+      { label: '测试一蛤', key: 'test' },
     ])
   })
   it('should reset to default conditions when input value', () => {
@@ -113,6 +118,7 @@ describe('useFilter composable', () => {
     expect(filter.unselectedConditionList.value).toEqual([
       { label: '状态', key: 'status' },
       { label: '创建时间', key: 'createdAt' },
+      { label: '测试一蛤', key: 'test' },
     ])
     // 清空对应的值
     filter.selectedConditionList.value[0].value = ''
@@ -126,6 +132,7 @@ describe('useFilter composable', () => {
     expect(filter.unselectedConditionList.value).toEqual([
       { label: '状态', key: 'status' },
       { label: '创建时间', key: 'createdAt' },
+      { label: '测试一蛤', key: 'test' },
     ])
     expect(filter.conditionList.value).toEqual([])
   })
@@ -275,5 +282,53 @@ describe('useFilter composable', () => {
       allConditionMap.value.status,
     ])
     expect(filter.selectedConditionList.value[2].value).toEqual([])
+  })
+  // 等待请求完成后，添加 options 的数据
+  it('should add async options after request options', async () => {
+    async function fetchPriorityOptions() {
+      const options = await new Promise<{ label: string, value: string }[]>((resolve) => {
+        setTimeout(() => {
+          resolve([
+            { label: '紧急', value: 'urgent' },
+            { label: '高', value: 'high' },
+            { label: '中', value: 'middle' },
+            { label: '低', value: 'low' },
+            { label: '无关紧要', value: 'insignificant' },
+          ])
+        }, 1000)
+      })
+      return options
+    }
+    const condition = {
+      key: 'test',
+      operator: Operator.CONTAINS,
+      format: Format.SELECT,
+      value: [],
+      isDefault: true,
+      options: fetchPriorityOptions,
+    }
+    condition.options = await filter.fetchOptions(condition.key, condition.options)
+    expect(condition.options).toEqual([
+      {
+        label: '紧急',
+        value: 'urgent',
+      },
+      {
+        label: '高',
+        value: 'high',
+      },
+      {
+        label: '中',
+        value: 'middle',
+      },
+      {
+        label: '低',
+        value: 'low',
+      },
+      {
+        label: '无关紧要',
+        value: 'insignificant',
+      },
+    ])
   })
 })
