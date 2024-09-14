@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import type { ConditionItem } from '~/types'
+import type { ConditionItem, Option } from '~/types'
 
-const { item } = defineProps < {
+const { item } = defineProps <{
   item: ConditionItem
 }>()
 
 const inputValue = defineModel<string[]>()
 
-const options = computed(() => item.options)
+const options = computed<Option[]>(() => {
+  if (Array.isArray(item.options)) {
+    return item.options
+  }
+  return []
+})
 </script>
 
 <template>

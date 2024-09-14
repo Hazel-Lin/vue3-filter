@@ -61,7 +61,7 @@ export interface ConditionItem {
   key: string
   isDefault?: boolean
   shortcuts?: { text: string, value: () => Date[] }[]
-  options?: Option[]
+  options?: Option[] | (() => Promise<Option[]>)
 }
 
 export type SimpleConditionItem = Pick<ConditionItem, 'label' | 'key' | 'operator' | 'value' | 'format' | 'options'>

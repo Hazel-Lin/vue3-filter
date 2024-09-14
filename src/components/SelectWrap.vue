@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import type { ConditionItem } from '~/types'
+import { computed } from 'vue'
+import type { ConditionItem, Option } from '~/types'
 
 const { item } = defineProps<{
   item: ConditionItem
 }>()
 
 const selectedValue = defineModel<string | string[]>()
-const options = computed(() => item.options)
+const options = computed<Option[]>(() => {
+  if (Array.isArray(item.options)) {
+    return item.options
+  }
+  return []
+})
+
 const isMultiple = computed(() => Array.isArray(selectedValue.value))
 </script>
 
