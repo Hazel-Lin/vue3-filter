@@ -60,7 +60,7 @@ function getComponentType(item: ConditionItem) {
               style="color: red"
               @click="removeCondition(item.key)"
             >
-              <delete />
+              <RemoveFilled />
             </el-icon>
           </el-tooltip>
         </div>
