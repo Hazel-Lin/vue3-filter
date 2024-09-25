@@ -1,5 +1,6 @@
-import type { ConditionItem } from '~/types'
+import type { ConditionItem, Option } from '~/types'
 import { ClassName, Format, Operator } from '~/types'
+import { priorityOptions, statusOptions } from './constant'
 
 export function createDateShortcuts(shortcuts = []): { text: string, value: () => Date[] }[] {
   const defaultShortcuts = [
@@ -35,14 +36,23 @@ export function createDateShortcuts(shortcuts = []): { text: string, value: () =
 }
 
 // 通用的异步函数来获取选项
-async function fetchPriorityOptions() {
-  const options = await new Promise<{ label: string, value: string }[]>((resolve) => {
-    resolve([
-      { label: '测试', value: 'test' },
-    ])
+export async function getList(param: any = {}): Promise<Option[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          label: `男${param.name}`,
+          value: 'male',
+        },
+        {
+          label: '女',
+          value: 'female',
+        },
+      ])
+    }, 200)
   })
-  return options
 }
+
 // 所有选项的 map
 export const allConditionMap = ref<Record<string, ConditionItem>>({
   name: {
@@ -64,28 +74,7 @@ export const allConditionMap = ref<Record<string, ConditionItem>>({
     className: ClassName.OPTION,
     format: Format.CHECKBOX,
     isDefault: true,
-    options: [
-      {
-        label: '紧急',
-        value: 'urgent',
-      },
-      {
-        label: '高',
-        value: 'high',
-      },
-      {
-        label: '中',
-        value: 'middle',
-      },
-      {
-        label: '低',
-        value: 'low',
-      },
-      {
-        label: '无关紧要',
-        value: 'insignificant',
-      },
-    ],
+    options: priorityOptions,
   },
   status: {
     label: '状态',
@@ -95,44 +84,8 @@ export const allConditionMap = ref<Record<string, ConditionItem>>({
     toValue: null,
     className: ClassName.STATUS,
     format: Format.SELECT,
-    options: [
-      {
-        label: '新',
-        value: 'new',
-      },
-      {
-        label: '接受/处理',
-        value: 'in_progress',
-      },
-      {
-        label: '已分配',
-        value: 'assigned',
-      },
-      {
-        label: '已解决',
-        value: 'resolved',
-      },
-      {
-        label: '已验证',
-        value: 'verified',
-      },
-      {
-        label: '重新打开',
-        value: 'reopened',
-      },
-      {
-        label: '已拒绝',
-        value: 'rejected',
-      },
-      {
-        label: '已关闭',
-        value: 'closed',
-      },
-      {
-        label: '挂起',
-        value: 'suspended',
-      },
-    ],
+    options: statusOptions,
+    isDefault: true,
   },
   createdAt: {
     label: '创建时间',
@@ -145,13 +98,16 @@ export const allConditionMap = ref<Record<string, ConditionItem>>({
     shortcuts: createDateShortcuts(),
   },
   test: {
-    label: '测试一蛤',
+    label: '测试',
     key: 'test',
     operator: Operator.CONTAINS,
+    isDefault: true,
     value: '',
     toValue: null,
     className: ClassName.STRING,
     format: Format.SELECT,
-    options: fetchPriorityOptions,
+    options: async (param: any = {}): Promise<Option[]> => {
+      return await getList(param)
+    },
   },
 })

@@ -1,9 +1,3 @@
-/*
-* 字段定义
-* 标题：name
-* 优先级：priority
-* 状态：status
-*/
 import type { ConditionItem, SelectedCondition, SimpleConditionItem } from '~/types'
 import { Format, OperatorZh } from '~/types'
 import { allConditionMap } from '~/utils'
@@ -185,6 +179,19 @@ export function useFilter() {
       }
     })
   }
+  // 添加一个新的方法来更新 options 的参数
+  async function updateOptionsParam(key: string, param: any) {
+    const condition = allConditionMap.value[key]
+    if (condition && typeof condition.options === 'function') {
+      const options = await condition.options(param)
+      condition.options = options
+      // 如果这个条件已经被选中，我们需要重新获取选项
+      const selectedCondition = selectedConditionList.value.find(item => item.key === key)
+      if (selectedCondition) {
+        selectedCondition.options = options
+      }
+    }
+  }
   onMounted(() => {
     setDefaultConditions()
     getUnselectedConditionList()
@@ -204,5 +211,6 @@ export function useFilter() {
     removeConditionValue,
     handleReset,
     setDefaultConditions,
+    updateOptionsParam,
   }
 }

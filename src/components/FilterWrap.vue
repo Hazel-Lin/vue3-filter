@@ -6,7 +6,7 @@ import DatePickerWrap from './DatePickerWrap.vue'
 import InputWrap from './InputWrap.vue'
 import SelectWrap from './SelectWrap.vue'
 
-const { selectedConditionList, unselectedConditionList, checkList, removeConditionValue, getConditionListDisplay, conditionList, removeCondition, save, handleFilter, handleReset } = useFilter()
+const { selectedConditionList, unselectedConditionList, updateOptionsParam, checkList, removeConditionValue, getConditionListDisplay, conditionList, removeCondition, save, handleFilter, handleReset } = useFilter()
 const { isShowDialog, hideDialog, showDialog } = useShowDialog()
 
 const isSaveDisabled = computed(() => checkList.value.length === 0)
@@ -30,6 +30,10 @@ function getComponentType(item: ConditionItem) {
       return InputWrap
   }
 }
+
+defineExpose({
+  updateOptionsParam,
+})
 </script>
 
 <template>
