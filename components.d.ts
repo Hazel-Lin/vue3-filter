@@ -24,7 +24,7 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     Filter: typeof import('./src/components/filter.vue')['default']
     FilterItem: typeof import('./src/components/FilterItem.vue')['default']
-    FilterWrap: typeof import('./src/components/FilterWrap.vue')['default']
+    FilterWrap: typeof import('./src/components/FilterWrap')['default']
     InputWrap: typeof import('./src/components/InputWrap.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

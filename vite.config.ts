@@ -21,6 +21,7 @@ export default defineConfig({
     host: '0.0.0.0',
   },
   plugins: [
+    Vue(),
     vueJsx(),
     VueMacros({
       defineOptions: false,
